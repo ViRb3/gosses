@@ -2,8 +2,7 @@
 
 ![e](https://user-images.githubusercontent.com/760637/71449335-790a4200-274a-11ea-80be-4c536fbad8a1.gif)
 
-[![build status](https://github.com/virb3/gosses/workflows/ci/badge.svg)](https://github.com/virb3/gosses/actions)
-[![docker build status](https://img.shields.io/docker/cloud/build/virb3/gosses.svg?logo=docker)](https://hub.docker.com/r/virb3/gosses)
+[![build status](https://github.com/virb3/gosses/workflows/Release/badge.svg)](https://github.com/virb3/gosses/actions)
 [![docker pulls](https://img.shields.io/docker/pulls/virb3/gosses.svg?logo=docker)](https://hub.docker.com/r/virb3/gosses)
 [![github downloads](https://img.shields.io/github/downloads/virb3/gosses/total.svg?logo=github)](https://github.com/virb3/gosses/releases)
 
