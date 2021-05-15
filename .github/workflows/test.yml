@@ -21,6 +21,8 @@ jobs:
       - name: Checkout without token
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Setup Go environment
         uses: actions/setup-go@v2.1.3
