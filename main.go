@@ -92,7 +92,12 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	} else {
-		rootPath = filepath.Clean(flag.Args()[0])
+		var err error
+		// required to ensure os.Stat filename won't be absolute (e.g. '..')
+		rootPath, err = filepath.Abs(flag.Args()[0])
+		if err != nil {
+			panic(err)
+		}
 	}
 	if *logJson {
 		log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
@@ -171,7 +176,7 @@ func handleContent(c echo.Context) error {
 		return err
 	}
 	// error on hidden files but not current directory '.'
-	if *skipHidden && strings.HasPrefix(stat.Name(), ".") && len(stat.Name()) > 1 {
+	if *skipHidden && strings.HasPrefix(stat.Name(), ".") {
 		return c.String(404, "error")
 	}
 	if !stat.IsDir() {
