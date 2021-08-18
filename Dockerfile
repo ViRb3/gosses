@@ -4,13 +4,13 @@ WORKDIR /src
 COPY . .
 
 RUN go mod download && \
-    CGO_ENABLED=0 go build -ldflags="-s -w" -o "bin-release"
+    CGO_ENABLED=0 go build -ldflags="-s -w" -o "gosses"
 
 FROM alpine:3.14.1
 
 WORKDIR /
 
-COPY --from=builder "/src/bin-release" "/"
+COPY --from=builder "/src/gosses" "/"
 
-ENTRYPOINT ["/bin-release"]
+ENTRYPOINT ["/gosses"]
 EXPOSE 8001
