@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/rs/zerolog v1.25.0
-	github.com/ziflex/lecho/v2 v2.5.0
+	github.com/ziflex/lecho/v2 v2.5.1
 )
 
 require (
