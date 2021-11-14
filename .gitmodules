@@ -1,4 +1,3 @@
-[submodule "gossa-ui"]
-	path = gossa-ui
-	url = https://github.com/pldubouilh/gossa-ui
-	branch = master
+[submodule "gosses-ui"]
+	path = gosses-ui
+	url = https://github.com/ViRb3/gosses-ui

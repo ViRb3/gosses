@@ -36,16 +36,16 @@ var logJson = flag.Bool("json", false, "Output logs in JSON")
 var rootPath string
 var pageTemplate *template.Template
 
-//go:embed gossa-ui/ui.tmpl
+//go:embed gosses-ui/ui.tmpl
 var pageHtml string
 
-//go:embed gossa-ui/script.js
+//go:embed gosses-ui/script.js
 var scriptJs string
 
-//go:embed gossa-ui/style.css
+//go:embed gosses-ui/style.css
 var styleCss string
 
-//go:embed gossa-ui/favicon.svg
+//go:embed gosses-ui/favicon.svg
 var faviconSvg []byte
 
 type pageRowData struct {
