@@ -261,6 +261,13 @@ func handleZip(c echo.Context) error {
 		if err != nil {
 			return err
 		}
+		if *skipHidden && strings.HasPrefix(f.Name(), ".") {
+			if f.IsDir() {
+				return filepath.SkipDir
+			} else {
+				return nil
+			}
+		}
 		header, err := zip.FileInfoHeader(f)
 		if err != nil {
 			return err
