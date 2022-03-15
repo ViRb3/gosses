@@ -8,6 +8,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/facebookgo/symwalk"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -169,7 +170,7 @@ func humanize(bytes int64) string {
 // If the file is a directory, it will be listed, otherwise it will be served directly.
 func handleContent(c echo.Context) error {
 	filePath := resolvePath(c.Request().URL.Path)
-	stat, err := os.Lstat(filePath)
+	stat, err := osStat(filePath)
 	if os.IsNotExist(err) {
 		return c.String(404, "error")
 	} else if err != nil {
@@ -214,11 +215,11 @@ func handleListDir(c echo.Context, filePath string) error {
 		if *skipHidden && strings.HasPrefix(file.Name(), ".") {
 			continue
 		}
-		fileStat, err := os.Lstat(filepath.Join(filePath, file.Name()))
+		fileStat, err := osStat(filepath.Join(filePath, file.Name()))
 		if err != nil {
 			return err
 		}
-		if file.IsDir() {
+		if fileStat.IsDir() {
 			p.RowsFolders = append(p.RowsFolders, pageRowData{
 				// trailing slash is required by frontend
 				file.Name() + "/",
@@ -248,7 +249,7 @@ func handleZip(c echo.Context) error {
 	zipPath := c.QueryParam("zipPath")
 	zipName := c.QueryParam("zipName")
 	zipFullPath := resolvePath(zipPath)
-	if _, err := os.Lstat(zipFullPath); os.IsNotExist(err) {
+	if _, err := osStat(zipFullPath); os.IsNotExist(err) {
 		return c.String(404, "error")
 	} else if err != nil {
 		return err
@@ -256,20 +257,9 @@ func handleZip(c echo.Context) error {
 	c.Response().Header().Set("Content-Disposition", "attachment; filename=\""+zipName+".zip\"")
 	zipWriter := zip.NewWriter(c.Response().Writer)
 	defer zipWriter.Close()
-	if err := filepath.Walk(zipFullPath, func(path string, f fs.FileInfo, err error) error {
+	if err := osWalk(zipFullPath, func(path string, f fs.FileInfo, err error) error {
 		if err != nil {
 			return err
-		}
-		if *symlinks && f.Mode()&os.ModeSymlink != 0 {
-			// resolve symlink before proceeding
-			path, err = filepath.EvalSymlinks(path)
-			if err != nil {
-				return err
-			}
-			f, err = os.Lstat(path)
-			if err != nil {
-				return err
-			}
 		}
 		header, err := zip.FileInfoHeader(f)
 		if err != nil {
@@ -355,6 +345,23 @@ func handleRPC(c echo.Context) error {
 		return err
 	}
 	return c.String(200, "ok")
+}
+
+func osStat(name string) (os.FileInfo, error) {
+	if *symlinks {
+		return os.Stat(name)
+	} else {
+		return os.Lstat(name)
+	}
+}
+
+func osWalk(path string, walkFn filepath.WalkFunc) error {
+	if *symlinks {
+		return symwalk.Walk(path, walkFn)
+	} else {
+		return filepath.Walk(path, walkFn)
+	}
+	return nil
 }
 
 // Resolves file paths relative to the rootPath, stripping away the prefixPath.
