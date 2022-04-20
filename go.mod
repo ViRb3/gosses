@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/facebookgo/symwalk v0.0.0-20150726040526-42004b9f3222
-	github.com/labstack/echo/v4 v4.7.1
+	github.com/labstack/echo/v4 v4.7.2
 	github.com/rs/zerolog v1.26.1
 	github.com/ziflex/lecho/v2 v2.5.2
 )
